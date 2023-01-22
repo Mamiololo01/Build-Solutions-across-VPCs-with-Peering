@@ -1,0 +1,5 @@
+Note: A few users reported issues using Firefox with this lab. If you have trouble, we recommend using a different browser. We expect this issue will be 
+resolved with upcoming Firefox updates.
+Logging In
+Log in to the AWS Management Console using the credentials provided on the lab instructions page. Make sure you're in the N. Virginia (us-east-1) 
+Region throughout the lab.
