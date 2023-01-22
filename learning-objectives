@@ -1,0 +1,27 @@
+Create Web_VPC Subnets and Attach a New Internet Gateway
+
+Using the AWS console, create the Web_VPC VPC with the 192.168.0.0/16 IPv4 CIDR block. Create the WebIG internet gateway. Modify the route table to attach the internet gateway to the Web_VPC.
+Run Progress Check
+
+
+Create a Peering Connection
+
+Create a peering connection called DBtoWeb. Peer the newly created Web_VPC with the DB_VPC. Ensure DB_VPC is the requester and Web_VPC is the accepter. Accept the request.
+Run Progress Check
+
+
+Create an EC2 Instance and configure Wordpress
+
+Launch a new public facing Ubuntu Server 20.04 LTS EC2 instance in the Web_VPC VPC using the provided bootstrap user data script.
+#!/bin/bash sudo apt update -y sudo apt install php-curl php-gd php-mbstring php-xml php-xmlrpc php-soap php-intl php-zip perl mysql-server apache2 libapache2-mod-php php-mysql -y wget https://github.com/ACloudGuru-Resources/course-aws-certified-solutions-architect-associate/raw/main/lab/5/wordpress.tar.gz tar zxvf wordpress.tar.gz cd wordpress wget https://raw.githubusercontent.com/ACloudGuru-Resources/course-aws-certified-solutions-architect-associate/main/lab/5/000-default.conf cp wp-config-sample.php wp-config.php perl -pi -e "s/database_name_here/wordpress/g" wp-config.php perl -pi -e "s/username_here/wordpress/g" wp-config.php perl -pi -e "s/password_here/wordpress/g" wp-config.php perl -i -pe' BEGIN { @chars = ("a" .. "z", "A" .. "Z", 0 .. 9); push @chars, split //, "!@#$%^&*()-_ []{}<>~\`+=,.;:/?|"; sub salt { join "", map $chars[ rand @chars ], 1 .. 64 } } s/put your unique phrase here/salt()/ge ' wp-config.php mkdir wp-content/uploads chmod 775 wp-content/uploads mv 000-default.conf /etc/apache2/sites-enabled/ mv /wordpress /var/www/ apache2ctl restart
+Configure Wordpress by editing /var/www/wordpress/wp-config.php to point DB_HOST to the RDS database endpoint.
+Mark Complete
+
+Modify the RDS Security Groups to Allow Connections from the Web_VPC VPC
+
+The RDS instance requires a security group modification to allow access from 192.168.0.0/16.
+Mark Complete
+
+Test WordPress
+
+Visit the IP address of your EC2 instance in a web browser, and confirm WordPress is working correctly and communicating with the RDS instance via VPC peering.
